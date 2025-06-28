@@ -1,20 +1,17 @@
-const form = document.querySelector(".feedback-form");
-const localStorageKey = "feedback-form-state";
-const email = form.elements.email;
-const message = form.elements.message;
-
-const savedData = JSON.parse(localStorage.getItem(localStorageKey)) || {};
-const formData = {
-    email: savedData.email ?? "",
-    message: savedData.message ?? ""
+let formData = {
+    email: "",
+    message: ""
 }
 
-try {
-    email.value = formData.email;
-    message.value = formData.message;
-} catch (error) {
-    console.log(error.name);
-    console.log(error.message);
+const form = document.querySelector(".feedback-form");
+const localStorageKey = "feedback-form-state";
+
+const savedData = localStorage.getItem(localStorageKey);
+
+if (savedData) {
+    formData = JSON.parse(savedData);
+    form.email.value = formData.email || "";
+    form.message.value = formData.message || "";
 }
 
 form.addEventListener("input", (ev) => {
@@ -25,18 +22,11 @@ form.addEventListener("input", (ev) => {
 form.addEventListener("submit", (ev) => {
     ev.preventDefault();
 
-    const emailValue = email.value.trim();
-    const messageValue = message.value.trim();
-    if (emailValue === "" || messageValue === "") {
+    if (ev.target.email.value === "" || ev.target.message.value === "") {
         return alert('Fill in all fields')
     };
 
-    const submitData = {
-        email: emailValue,
-        message: messageValue
-    }
-
-    console.log(submitData);
+    console.log(formData);
     localStorage.removeItem(localStorageKey);
     form.reset();
 });
